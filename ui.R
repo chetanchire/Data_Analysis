@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(tidyverse)
 
 # Define UI for application that draws a histogram
 fluidPage(
@@ -18,10 +19,13 @@ fluidPage(
     # Sidebar with a slider input for number of bins
     sidebarLayout(
         sidebarPanel(
+          fileInput("Analysis", label="Select analysis_log file", 
+                    multiple = FALSE, accept = NULL, width = NULL,
+                    placeholder = "Showing built-in data", capture = NULL),
             sliderInput("bins",
                         "Number of bins:",
                         min = 1,
-                        max = 50,
+                        max = 200,
                         value = 30)
         ),
 
