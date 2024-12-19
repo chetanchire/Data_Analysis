@@ -29,13 +29,14 @@ function(input, output, session) {
     }
   )
 
+  observeEvent(rdata(), {
+    choices1 <- colnames(rdata())
+    updateSelectInput(inputId = "xvar", choices = choices1)
+    updateSelectInput(inputId = "yvar", choices = choices1)
+  })
+
   output$distPlot <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    x <- rdata()$S
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = "darkgray", border = "white",
-         xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
+    ggplot(rdata(), aes_string(input$xvar, input$yvar)) +
+      geom_point()
   })
 }

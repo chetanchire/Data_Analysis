@@ -13,7 +13,7 @@ library(tidyverse)
 # Define UI for application that draws a histogram
 fluidPage(
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Improc Output Analysis"),
 
   # Sidebar with a slider input for number of bins
   sidebarLayout(
@@ -26,9 +26,12 @@ fluidPage(
                 multiple = FALSE, accept = NULL, width = NULL,
                 placeholder = "Showing built-in data", capture = NULL
       ),
-      sliderInput("bins",
-                  "Number of bins:",
-                  min = 1, max = 200, value = 30)
+      selectInput("xvar", "X Axis Variable",
+                choices = NULL, selected = NULL, multiple = FALSE
+      ),
+      selectInput("yvar", "Y Axis Variable",
+                choices = NULL, selected = NULL, multiple = FALSE
+      )
     ),
     # Show a plot of the generated distribution
     mainPanel(
