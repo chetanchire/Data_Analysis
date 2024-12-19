@@ -17,9 +17,14 @@ function(input, output, session) {
       if (is.null(input$Analysis)) {
         df <- read.csv2("data/Analysis_log.csv", sep = ",")
       } else {
-        df <- read.csv2(input$Analysis$datapath, sep=",")
+        df <- read.csv2(input$Analysis$datapath, sep = ",")
       }
       df$S <- as.numeric(df$S)
+      if (!is.null(input$Append)) {
+        tempdf <- read.csv2(input$Append$datapath, sep = ",")
+        tempdf$S <- as.numeric(tempdf$S)
+        df <- rbind(df, tempdf)
+      }
       df
     }
   )

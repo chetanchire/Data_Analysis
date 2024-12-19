@@ -12,26 +12,27 @@ library(tidyverse)
 
 # Define UI for application that draws a histogram
 fluidPage(
+  # Application title
+  titlePanel("Old Faithful Geyser Data"),
 
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-          fileInput("Analysis", label="Select analysis_log file", 
-                    multiple = FALSE, accept = NULL, width = NULL,
-                    placeholder = "Showing built-in data", capture = NULL),
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 200,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("distPlot")
-        )
+  # Sidebar with a slider input for number of bins
+  sidebarLayout(
+    sidebarPanel(
+      fileInput("Analysis", label = "Select analysis_log file",
+                multiple = FALSE, accept = NULL, width = NULL,
+                placeholder = "Showing built-in data", capture = NULL
+      ),
+      fileInput("Append", label = "Append analysis_log file",
+                multiple = FALSE, accept = NULL, width = NULL,
+                placeholder = "Showing built-in data", capture = NULL
+      ),
+      sliderInput("bins",
+                  "Number of bins:",
+                  min = 1, max = 200, value = 30)
+    ),
+    # Show a plot of the generated distribution
+    mainPanel(
+      plotOutput("distPlot")
     )
+  )
 )
