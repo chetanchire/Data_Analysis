@@ -64,6 +64,6 @@ function(input, output, session) {
       geom_point()
   })
   output$lines <- renderText({
-    paste0(nrow(adata()), " rows out of ", nrow(rdata()), " selected")
+    paste0("Showing ",nrow(bdata()), " rows out of ", nrow(rdata()))
   })
 }
