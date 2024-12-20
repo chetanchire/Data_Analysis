@@ -14,7 +14,8 @@ library(tidyverse)
 fluidPage(
   # Application title
   titlePanel("Improc Output Analysis"),
-  fluidRow(
+  
+  fluidRow(style = "background-color:#e6e6e6;",
     #titlePanel("Select Data"),
     column(6,
       fileInput("Analysis", label = "Select analysis_log file",
@@ -30,7 +31,7 @@ fluidPage(
     )
   ),
 
-  fluidRow(
+  fluidRow(style = "background-color:#cccccc;",
     column(6,
       selectInput("xvar", "X Axis Variable",
         choices = NULL, selected = NULL, multiple = FALSE
@@ -43,23 +44,50 @@ fluidPage(
     )
   ),
 
-  fluidRow(
-    column(2,
+  fluidRow(style = "background-color:#e6e6e6;",
+    column(3,
       selectInput("ab1", "Select Antibody Cycle",
         choices = NULL, selected = NULL, multiple = TRUE
       )
     ),
-    column(2,
+    column(3,
       selectInput("band", "Select Band ID",
+        choices = NULL, selected = NULL, multiple = TRUE
+      )
+    ),
+    column(3,
+      selectInput("class", "Select Class ID",
+        choices = NULL, selected = NULL, multiple = TRUE
+      )
+    ),
+    column(3,
+      selectInput("membrane", "Select Membrane ID",
         choices = NULL, selected = NULL, multiple = TRUE
       )
     )
   ),
 
   fluidRow(
-    plotOutput("distPlot")
+    column(10, 
+      plotOutput("distPlot")
+    ),
+    column(2,
+           selectInput("color", "Color datapoints by: ",
+                        choices = c("Antibody" = "Ab1_name", 
+                                    "Band ID" = "band", 
+                                    "Class" = "class", 
+                                    "Membrane ID" = "membrane_id",
+                                    "Lane" = "lane"),
+                        selected = NULL, multiple = FALSE),
+           selectInput("scale", "Choose Y-axis Scale: ",
+                       choices = c("Normal" = "normal",
+                                   "Log10" = "log",
+                                   "Natural Log" = "ln"),
+                       selected = NULL, multiple = FALSE)
+           )
   ),
-  fluidRow(
-    textOutput("lines")
+  fluidRow(style = "background-color:#e6e6e6;",
+    textOutput("lines"),
+    actionButton("dfil", "Filter Data")
   )
 )
