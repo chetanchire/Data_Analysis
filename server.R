@@ -25,18 +25,45 @@ function(input, output, session) {
         tempdf$S <- as.numeric(tempdf$S)
         df <- rbind(df, tempdf)
       }
+      df$cycleAB <- paste(df$cycle, df$Ab1_name)
       df
     }
   )
 
   observeEvent(rdata(), {
     choices1 <- colnames(rdata())
+    choices2 <- unique(rdata()$Ab1_name)
+    choices3 <- unique(rdata()$band)
     updateSelectInput(inputId = "xvar", choices = choices1)
     updateSelectInput(inputId = "yvar", choices = choices1)
+    updateSelectInput(inputId = "ab1", choices = choices2)
+    updateSelectInput(inputId = "band", choices = choices3)
+  })
+
+  # adata <- reactive({
+  #   if (!is.null(input$ab1) & !is.null(input$band)) {
+  #     rdata() %>% filter(Ab1_name %in% input$ab1) %>%
+  #       filter(band %in% input$band)
+  #   } else if (is.null(input$ab1) & !is.null(input$band)) {
+  #     rdata() %>% filter(band %in% input$band)
+  #   } else if (!is.null(input$ab1) & is.null(input$band)) {
+  #     rdata() %>% filter(Ab1_name %in% input$ab1)
+  #   } else {
+  #     rdata()
+  #   }
+  # })
+
+  bdata <- reactive({
+    rdata() %>%
+      {if (!is.null(input$ab1)) filter(., Ab1_name %in% input$ab1) else .} %>%
+      {if (!is.null(input$band)) filter(., band %in% input$band) else .}
   })
 
   output$distPlot <- renderPlot({
-    ggplot(rdata(), aes_string(input$xvar, input$yvar)) +
+    ggplot(bdata(), aes_string(input$xvar, input$yvar)) +
       geom_point()
+  })
+  output$lines <- renderText({
+    paste0(nrow(adata()), " rows out of ", nrow(rdata()), " selected")
   })
 }

@@ -14,28 +14,52 @@ library(tidyverse)
 fluidPage(
   # Application title
   titlePanel("Improc Output Analysis"),
-
-  # Sidebar with a slider input for number of bins
-  sidebarLayout(
-    sidebarPanel(
+  fluidRow(
+    #titlePanel("Select Data"),
+    column(6,
       fileInput("Analysis", label = "Select analysis_log file",
-                multiple = FALSE, accept = NULL, width = NULL,
-                placeholder = "Showing built-in data", capture = NULL
-      ),
-      fileInput("Append", label = "Append analysis_log file",
-                multiple = FALSE, accept = NULL, width = NULL,
-                placeholder = "Showing built-in data", capture = NULL
-      ),
-      selectInput("xvar", "X Axis Variable",
-                choices = NULL, selected = NULL, multiple = FALSE
-      ),
-      selectInput("yvar", "Y Axis Variable",
-                choices = NULL, selected = NULL, multiple = FALSE
+        multiple = FALSE, accept = NULL, width = NULL,
+        placeholder = "Showing built-in data", capture = NULL
       )
     ),
-    # Show a plot of the generated distribution
-    mainPanel(
-      plotOutput("distPlot")
+    column(6,
+      fileInput("Append", label = "Append analysis_log file",
+        multiple = FALSE, accept = NULL, width = NULL,
+        placeholder = "Showing built-in data", capture = NULL
+      )
     )
+  ),
+
+  fluidRow(
+    column(6,
+      selectInput("xvar", "X Axis Variable",
+        choices = NULL, selected = NULL, multiple = FALSE
+      )
+    ),
+    column(6,
+      selectInput("yvar", "Y Axis Variable",
+        choices = NULL, selected = NULL, multiple = FALSE
+      )
+    )
+  ),
+
+  fluidRow(
+    column(2,
+      selectInput("ab1", "Select Antibody Cycle",
+        choices = NULL, selected = NULL, multiple = TRUE
+      )
+    ),
+    column(2,
+      selectInput("band", "Select Band ID",
+        choices = NULL, selected = NULL, multiple = TRUE
+      )
+    )
+  ),
+
+  fluidRow(
+    plotOutput("distPlot")
+  ),
+  fluidRow(
+    textOutput("lines")
   )
 )
