@@ -9,6 +9,7 @@
 
 library(shiny)
 library(tidyverse)
+library(shinyFeedback)
 
 # Define UI for application that draws a histogram
 fluidPage(
@@ -17,7 +18,7 @@ fluidPage(
   
   fluidRow(style = "background-color:#e6e6e6;",
     #titlePanel("Select Data"),
-    column(6,
+    column(6, shinyFeedback::useShinyFeedback(),
       fileInput("Analysis", label = "Select analysis_log file",
         multiple = FALSE, accept = NULL, width = NULL,
         placeholder = "Showing built-in data", capture = NULL
@@ -68,23 +69,23 @@ fluidPage(
   ),
 
   fluidRow(
-    column(10, 
+    column(10,
       plotOutput("distPlot")
     ),
     column(2,
-           selectInput("color", "Color datapoints by: ",
-                        choices = c("Antibody" = "Ab1_name", 
-                                    "Band ID" = "band", 
-                                    "Class" = "class", 
-                                    "Membrane ID" = "membrane_id",
-                                    "Lane" = "lane"),
-                        selected = NULL, multiple = FALSE),
-           selectInput("scale", "Choose Y-axis Scale: ",
-                       choices = c("Normal" = "normal",
-                                   "Log10" = "log",
-                                   "Natural Log" = "ln"),
-                       selected = NULL, multiple = FALSE)
-           )
+      selectInput("color", "Color datapoints by: ",
+                  choices = c("Antibody" = "Ab1_name",
+                              "Band ID" = "band",
+                              "Class" = "class",
+                              "Membrane ID" = "membrane_id",
+                              "Lane" = "lane"),
+                  selected = NULL, multiple = FALSE),
+      selectInput("scale", "Choose Y-axis Scale: ",
+                  choices = c("Normal" = "normal",
+                              "Log10" = "log",
+                              "Natural Log" = "ln"),
+                  selected = NULL, multiple = FALSE)
+    )
   ),
   fluidRow(style = "background-color:#e6e6e6;",
     textOutput("lines"),

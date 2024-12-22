@@ -10,9 +10,14 @@
 library(shiny)
 library(tidyverse)
 library(ggplot2)
+library(tools)
+library(shinyFeedback)
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
+
+  colist <- c("S", "class", "band", "lane", "cycle", "Ab1_name",
+              "membrane_id")
   
   daFil <- function(.data, filVar, filVal) {
     # This function filters ".data" on "filVar" column 
@@ -23,67 +28,61 @@ function(input, output, session) {
     return(data1)
   }
   
-  redata <- function(rasta) {
-    .data <- read.csv(rasta, sep = ",")
-    .data$S <- as.numeric(.data$S)
-    .data$class <- as.factor(.data$class)
-    .data$band <- as.factor(.data$band)
-    .data$lane <- as.factor(.data$lane)
-    .data$cycleAB <- paste(.data$cycle, .data$Ab1_name)
-    return(.data)
-  }
-  
-  # counter <- reactiveVal(0)
-  
-  # observeEvent(input$dfil, counter(counter() + 1))
-  
-  rdata <- reactive(
-    {
-      if (is.null(input$Analysis)) {
-        df <- redata("data/Analysis_log.csv")
+  redata <- function(rasta, ui_var) {
+    # Make sure "rasta" is non-NULL before using this function
+    if (file_ext(rasta) == "csv") {
+      .data <- read.csv(rasta, sep = ",")
+      if (all(colist %in% colnames(.data))) {
+        .data$S <- as.numeric(.data$S)
+        .data$class <- as.factor(.data$class)
+        .data$band <- as.factor(.data$band)
+        .data$lane <- as.factor(.data$lane)
+        .data$cycleAB <- paste(.data$cycle, .data$Ab1_name)
+        return(.data)
       } else {
-        df <- redata(input$Analysis$datapath)
+        val_col <- all(colist %in% colnames(.data))
+        shinyFeedback::feedbackDanger(ui_var, !val_col,
+          "File did not load: This is a wrong CSV"
+        )
+        req(val_col, cancelOutput = TRUE)
+        #return(NULL)
       }
-      df$S <- as.numeric(df$S)
-      if (!is.null(input$Append)) {
-        tempdf <- redata(input$Append$datapath)
-        df <- rbind(df, tempdf)
-      }
-      df
+    } else {
+      val_df <- file_ext(rasta) == "csv"
+      shinyFeedback::feedbackDanger(ui_var, !val_df,
+        "File did not load: This is not a CSV"
+      )
+      req(val_df, cancelOutput = TRUE)
+      #return(NULL)
     }
-  )
+  }
 
-  observeEvent(rdata(), {
-    choices1 <- colnames(rdata())
-    choices2 <- unique(rdata()$Ab1_name)
-    choices3 <- unique(rdata()$band)
-    choices4 <- unique(rdata()$class)
-    choices5 <- unique(rdata()$membrane_id)
-    updateSelectInput(inputId = "xvar", choices = choices1)
-    updateSelectInput(inputId = "yvar", choices = choices1)
-    updateSelectInput(inputId = "ab1", choices = choices2)
-    updateSelectInput(inputId = "band", choices = choices3)
-    updateSelectInput(inputId = "class", choices = choices4)
-    updateSelectInput(inputId = "membrane", choices = choices5)
+  rdata <- reactive({
+    if (!is.null(input$Analysis$datapath)) {
+      df <- redata(input$Analysis$datapath, "Analysis")
+    } else {
+      df <- redata("data/Analysis_log.csv")
+    }
+    if (!is.null(input$Append$datapath)) {
+      tempdf <- redata(input$Append$datapath, "Append")
+      df <- rbind(df, tempdf)
+    }
+    df
   })
 
-  # bdata <- reactive({
-  #   rdata() %>%
-  #     {if (!is.null(input$ab1)) filter(., Ab1_name %in% input$ab1) else .} %>%
-  #     {if (!is.null(input$band)) filter(., band %in% input$band) else .}
-  # })
-  
-  # adata <- reactive({
-  #   if (counter() == 1) {
-  #     return(anti_join(rdata(), bdata()))
-  #     counter(0)
-  #   } else {
-  #     return(rdata)
-  #   }
-  # })
-  
+  observeEvent(rdata(), {
+    data <- rdata()
+    updateSelectInput(inputId = "xvar", choices = colnames(data))
+    updateSelectInput(inputId = "yvar", choices = colnames(data))
+    updateSelectInput(inputId = "ab1", choices = unique(data$Ab1_name))
+    updateSelectInput(inputId = "band", choices = unique(data$band))
+    updateSelectInput(inputId = "class", choices = unique(data$class))
+    updateSelectInput(inputId = "membrane", choices = unique(data$membrane_id))
+  })
+
   bdata <- reactive({
-    rdata() %>%
+    data <- rdata()
+    data %>%
       daFil("Ab1_name", input$ab1) %>%
       daFil("band", input$band) %>%
       daFil("class", input$class) %>%
