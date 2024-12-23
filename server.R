@@ -32,32 +32,56 @@ function(input, output, session) {
   
   redata <- function(rasta, ui_var) {
     # Make sure "rasta" is non-NULL before using this function
-    if (file_ext(rasta) == "csv") {
-      .data <- read.csv(rasta, sep = ",")
-      if (all(colist %in% colnames(.data))) {
-        .data$S <- as.numeric(.data$S)
-        .data$class <- as.factor(.data$class)
-        .data$band <- as.factor(.data$band)
-        .data$lane <- as.factor(.data$lane)
-        .data$cycleAB <- paste(.data$cycle, .data$Ab1_name)
-        return(.data)
-      } else {
-        val_col <- all(colist %in% colnames(.data))
-        shinyFeedback::feedbackDanger(ui_var, !val_col,
-          "File did not load: This is a wrong CSV"
-        )
-        req(val_col, cancelOutput = TRUE)
-        #return(NULL)
-      }
-    } else {
-      val_df <- file_ext(rasta) == "csv"
-      shinyFeedback::feedbackDanger(ui_var, !val_df,
-        "File did not load: This is not a CSV"
-      )
-      req(val_df, cancelOutput = TRUE)
-      #return(NULL)
-    }
+    val_df <- file_ext(rasta) == "csv"
+    shinyFeedback::feedbackDanger(ui_var, !val_df,
+                                  "File did not load: This is not a CSV"
+    )
+    req(val_df, cancelOutput = TRUE)
+    
+    .data <- read.csv(rasta, sep = ",")
+    
+    val_col <- all(colist %in% colnames(.data))
+    shinyFeedback::feedbackDanger(ui_var, !val_col,
+                                  "File did not load: This is a wrong CSV"
+    )
+    req(val_col, cancelOutput = TRUE)
+    
+    .data$S <- as.numeric(.data$S)
+    .data$class <- as.factor(.data$class)
+    .data$band <- as.factor(.data$band)
+    .data$lane <- as.factor(.data$lane)
+    .data$cycleAB <- paste(.data$cycle, .data$Ab1_name)
+    return(.data)
   }
+  
+  # redata <- function(rasta, ui_var) {
+  #   # Make sure "rasta" is non-NULL before using this function
+  #   if (file_ext(rasta) == "csv") {
+  #     .data <- read.csv(rasta, sep = ",")
+  #     if (all(colist %in% colnames(.data))) {
+  #       .data$S <- as.numeric(.data$S)
+  #       .data$class <- as.factor(.data$class)
+  #       .data$band <- as.factor(.data$band)
+  #       .data$lane <- as.factor(.data$lane)
+  #       .data$cycleAB <- paste(.data$cycle, .data$Ab1_name)
+  #       return(.data)
+  #     } else {
+  #       val_col <- all(colist %in% colnames(.data))
+  #       shinyFeedback::feedbackDanger(ui_var, !val_col,
+  #         "File did not load: This is a wrong CSV"
+  #       )
+  #       req(val_col, cancelOutput = TRUE)
+  #       #return(NULL)
+  #     }
+  #   } else {
+  #     val_df <- file_ext(rasta) == "csv"
+  #     shinyFeedback::feedbackDanger(ui_var, !val_df,
+  #       "File did not load: This is not a CSV"
+  #     )
+  #     req(val_df, cancelOutput = TRUE)
+  #     #return(NULL)
+  #   }
+  # }
 
   rdata <- reactive({
     if (is.null(input$Analysis)) {

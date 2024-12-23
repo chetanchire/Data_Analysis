@@ -71,6 +71,7 @@ rdata <- reactive(
 #   req(val_df, cancelOutput = TRUE)
 #   
 #   tempdf<- read.csv(input$Analysis$datapath, sep = ",")
+#
 #   val_col <- all(colist %in% colnames(tempdf))
 #   shinyFeedback::feedbackDanger("Analysis", !val_col, "This is a wrong CSV")
 #   req(val_col, cancelOutput = TRUE)
