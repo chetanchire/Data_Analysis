@@ -1,3 +1,5 @@
+
+
 # redata <- function(rasta) {
 #   # Make sure "rasta" is non-NULL before using this function
 #   if (file_ext(rasta) == "csv") {
@@ -32,7 +34,7 @@ read_data <- reactive({
   if (file_ext(input$Analysis$datapath) == "csv") {
     df <- redata(input$Analysis$datapath)
     if (is.null(df)) {
-      df <- redata("data/Analysis_log.csv")
+      df <- redata("data/analysis_log.csv")
       cat("Can not analyze the uploaded CSV")
     }
   }
@@ -43,7 +45,7 @@ rdata <- reactive(
     if (is.null(input$Analysis) ||
         is.null(valid_datafile(input$Analysis$datapath))
     ) {
-      df <- redata("data/Analysis_log.csv")
+      df <- redata("data/analysis_log.csv")
     } else if (!is.null(valid_datafile(input$Analysis$datapath))) {
       df <- redata(input$Analysis$datapath)
     }
@@ -137,7 +139,7 @@ combine_data <- reactive({
 
 rdata <- reactive({
   if (is.null(analysis_data())) {
-    return(redata("data/Analysis_log.csv", " "))
+    return(redata("data/analysis_log.csv", " "))
   } else {
     analysis_data()
   }

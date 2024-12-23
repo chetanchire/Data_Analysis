@@ -15,6 +15,8 @@ library(shinyFeedback)
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
+  
+  options(shiny.maxRequestSize=30*1024^2)
 
   colist <- c("S", "class", "band", "lane", "cycle", "Ab1_name",
               "membrane_id")
@@ -59,7 +61,7 @@ function(input, output, session) {
 
   rdata <- reactive({
     if (is.null(input$Analysis)) {
-      rdata <- redata("data/Analysis_log.csv", " ")
+      rdata <- redata("data/analysis_log.csv", " ")
     } else {
       rdata <- redata(input$Analysis$datapath, "Analysis")
     }
@@ -83,12 +85,12 @@ function(input, output, session) {
       daFil("band", input$band) %>%
       daFil("class", input$class) %>%
       daFil("membrane_id", input$membrane)
-    bdata
   })
 
   output$distPlot <- renderPlot({
-    p <- ggplot(bdata(), aes_string(input$xvar, input$yvar, 
-                                    color = input$color))
+    req(input$xvar, input$yvar, input$color)
+    p <- ggplot(bdata(), 
+                aes_string(input$xvar, input$yvar, color = input$color))
     if (input$scale == "normal") {
       return(p + geom_point())
     } else if (input$scale == "log") {
@@ -100,6 +102,6 @@ function(input, output, session) {
     } 
   }, res = 96)
   output$lines <- renderText({
-    paste0("Showing ",nrow(bdata()), " rows out of ", nrow(rdata()))
-  })
+     paste0("Showing ",nrow(bdata()), " rows out of ", nrow(rdata()))
+   })
 }

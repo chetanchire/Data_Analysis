@@ -5,9 +5,9 @@ account: proteowise
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13634472
-bundleId: 9559206
+bundleId: 9560917
 url: https://proteowise.shinyapps.io/Data_Analysis/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: data/analysis_log - Copy.csv|data/session.csv|Old saved functions.R
+ignoredFiles: .RData|data/analysis_log - Copy.csv|data/session.csv|Old saved functions.R

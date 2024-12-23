@@ -82,7 +82,7 @@ fluidPage(
     )
   ),
   fluidRow(style = "background-color:#e6e6e6;",
-    textOutput("lines"),
-    actionButton("dfil", "Filter Data")
+    textOutput("lines")
+    #actionButton("dfil", "Filter Data")
   )
 )
