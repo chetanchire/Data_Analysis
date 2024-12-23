@@ -23,12 +23,6 @@ fluidPage(
         multiple = FALSE, accept = NULL, width = NULL,
         placeholder = "Showing built-in data", capture = NULL
       )
-    ),
-    column(6,
-      fileInput("Append", label = "Append analysis_log file",
-        multiple = FALSE, accept = NULL, width = NULL,
-        placeholder = "Showing built-in data", capture = NULL
-      )
     )
   ),
 

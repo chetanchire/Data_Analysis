@@ -58,35 +58,32 @@ function(input, output, session) {
   }
 
   rdata <- reactive({
-    if (!is.null(input$Analysis$datapath)) {
-      df <- redata(input$Analysis$datapath, "Analysis")
+    if (is.null(input$Analysis)) {
+      rdata <- redata("data/Analysis_log.csv", " ")
     } else {
-      df <- redata("data/Analysis_log.csv")
+      rdata <- redata(input$Analysis$datapath, "Analysis")
     }
-    if (!is.null(input$Append$datapath)) {
-      tempdf <- redata(input$Append$datapath, "Append")
-      df <- rbind(df, tempdf)
-    }
-    df
+    rdata
   })
 
   observeEvent(rdata(), {
-    data <- rdata()
-    updateSelectInput(inputId = "xvar", choices = colnames(data))
-    updateSelectInput(inputId = "yvar", choices = colnames(data))
-    updateSelectInput(inputId = "ab1", choices = unique(data$Ab1_name))
-    updateSelectInput(inputId = "band", choices = unique(data$band))
-    updateSelectInput(inputId = "class", choices = unique(data$class))
-    updateSelectInput(inputId = "membrane", choices = unique(data$membrane_id))
+    odata <- rdata()
+    updateSelectInput(inputId = "xvar", choices = colnames(odata))
+    updateSelectInput(inputId = "yvar", choices = colnames(odata))
+    updateSelectInput(inputId = "ab1", choices = unique(odata$Ab1_name))
+    updateSelectInput(inputId = "band", choices = unique(odata$band))
+    updateSelectInput(inputId = "class", choices = unique(odata$class))
+    updateSelectInput(inputId = "membrane", choices = unique(odata$membrane_id))
   })
 
   bdata <- reactive({
-    data <- rdata()
-    data %>%
+    bdata <- rdata()
+    bdata %>%
       daFil("Ab1_name", input$ab1) %>%
       daFil("band", input$band) %>%
       daFil("class", input$class) %>%
       daFil("membrane_id", input$membrane)
+    bdata
   })
 
   output$distPlot <- renderPlot({
