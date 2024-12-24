@@ -103,6 +103,8 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
     
+    options(shiny.maxRequestSize=30*1024^2)
+    
     dframe <- reactiveValues(read_data = NULL,
                              prev_data = NULL)
     
@@ -153,7 +155,7 @@ server <- function(input, output) {
                 } else if (input$scale == "ln") {
             return(p + scale_y_continuous(transform = "log"))
                 }
-    })
+    }, res = 96)
     
     output$lines <- renderText({
         paste0("Showing ",nrow(bdata()), " rows out of ", nrow(dframe$read_data),
