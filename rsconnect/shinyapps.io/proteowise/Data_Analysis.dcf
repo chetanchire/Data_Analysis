@@ -5,7 +5,7 @@ account: proteowise
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13634472
-bundleId: 9562770
+bundleId: 9565045
 url: https://proteowise.shinyapps.io/Data_Analysis/
 version: 1
 asMultiple: FALSE

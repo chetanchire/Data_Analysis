@@ -105,8 +105,7 @@ server <- function(input, output) {
     
     options(shiny.maxRequestSize=30*1024^2)
     
-    dframe <- reactiveValues(read_data = NULL,
-                             prev_data = NULL)
+    dframe <- reactiveValues(read_data = NULL, prev_data = NULL)
     
     colist <- c("S", "class", "band", "lane", "cycle", "Ab1_name",
                 "membrane_id")
@@ -131,6 +130,10 @@ server <- function(input, output) {
     observeEvent(rdata(), {
         dframe$prev_data <- dframe$read_data
         dframe$read_data <- rdata()
+        # update_inputs(dframe$read_data)
+    })
+    
+    observe({
         update_inputs(dframe$read_data)
     })
     

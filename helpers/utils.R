@@ -1,4 +1,5 @@
 library(tools)
+library(tidyverse)
 library(shinyFeedback)
 
 daFil <- function(.data, filVar, filVal) {
@@ -46,7 +47,15 @@ update_inputs <- function(.data) {
 }
 
 append_data <- function(data1, data2) {
-  return(rbind(data1, data2))
+  col_names1 <- colnames(data1)
+  col_names2 <- colnames(data2)
+  if (length(setdiff(col_names1, col_names2)) == 0) {
+    return(bind_rows(data1, data2))
+  } else {
+    com_cols <- intersect(colnames(data1), colnames(data2))
+    return(bind_rows(data1[,col_names1 %in% com_cols], 
+                     data2[,col_names2 %in% com_cols]))
+  }
 }
 
 reset_data <- function(data, colist) {
